@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class TableGraph<V> implements Graph<V> {
+public class TableGraph<V, E extends Edge<V>> implements Graph<V, E> {
 
-    private final Map<V, Map<V, Edge>> vertexMap = new HashMap<>();
-    private final PathFinder<V, Edge> pathFinder;
+    private final Map<V, Map<V, E>> vertexMap = new HashMap<>();
+    private final PathFinder<V, E> pathFinder;
 
-    TableGraph(PathFinder<V, Edge> pathFinder) {
+    TableGraph(PathFinder<V, E> pathFinder) {
         this.pathFinder = pathFinder;
     }
 
@@ -29,8 +29,10 @@ public class TableGraph<V> implements Graph<V> {
     }
 
     @Override
-    public void addWeightedEdge(V vertex1, V vertex2, float weight) {
-        Edge edge = Edge.of(weight);
+    public void addEdge(E edge) {
+
+        V vertex1 = edge.getVertex1();
+        V vertex2 = edge.getVertex2();
 
         vertexMap
                 .computeIfAbsent(vertex1, v -> directionMap())
@@ -44,16 +46,11 @@ public class TableGraph<V> implements Graph<V> {
     }
 
     @Override
-    public void addEdge(V vertex1, V vertex2) {
-        addWeightedEdge(vertex1, vertex2, 1);
-    }
-
-    @Override
-    public Optional<StepPath<V>> getAnyPath(V fromVertex, V toVertex) {
+    public Optional<StepPath<E>> getAnyPath(V fromVertex, V toVertex) {
         return pathFinder.getPath(fromVertex, toVertex, vertexMap::get);
     }
 
-    private Map<V, Edge> directionMap() {
+    private Map<V, E> directionMap() {
         return new HashMap<>();
     }
 }

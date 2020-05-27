@@ -5,13 +5,14 @@ import org.junit.Test;
 import java.util.Optional;
 
 import static net.evlikat.Graphs.newGraph;
+import static net.evlikat.SimpleEdge.between;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableGraphTest {
 
     @Test
     public void shouldAddVertex() {
-        Graph<String> graph = newGraph();
+        Graph<String, SimpleEdge<String>> graph = newGraph();
 
         assertThat(graph.order()).isEqualTo(0);
 
@@ -22,92 +23,92 @@ public class TableGraphTest {
 
     @Test
     public void shouldAddEdge() {
-        Graph<String> graph = newGraph();
+        Graph<String, SimpleEdge<String>> graph = newGraph();
 
         assertThat(graph.size()).isEqualTo(0);
 
-        graph.addEdge("a", "b");
+        graph.addEdge(between("a", "b"));
 
         assertThat(graph.size()).isEqualTo(1);
     }
 
     @Test
     public void shouldCalculateOrder() {
-        Graph<String> graph = newGraph();
+        Graph<String, SimpleEdge<String>> graph = newGraph();
 
-        graph.addEdge("a", "b");
-        graph.addEdge("b", "c");
-        graph.addEdge("a", "c");
-        graph.addEdge("c", "d");
-        graph.addEdge("d", "e");
+        graph.addEdge(between("a", "b"));
+        graph.addEdge(between("b", "c"));
+        graph.addEdge(between("a", "c"));
+        graph.addEdge(between("c", "d"));
+        graph.addEdge(between("d", "e"));
 
         assertThat(graph.order()).isEqualTo(5);
     }
 
     @Test
     public void shouldCalculateSize() {
-        Graph<String> graph = newGraph();
+        Graph<String, SimpleEdge<String>> graph = newGraph();
 
-        graph.addEdge("a", "b");
-        graph.addEdge("b", "c");
-        graph.addEdge("a", "c");
-        graph.addEdge("c", "d");
+        graph.addEdge(between("a", "b"));
+        graph.addEdge(between("b", "c"));
+        graph.addEdge(between("a", "c"));
+        graph.addEdge(between("c", "d"));
 
         assertThat(graph.size()).isEqualTo(4);
     }
 
     @Test
     public void shouldFindPathBetweenNeighbourVertices() {
-        Graph<String> graph = newGraph();
-        graph.addEdge("a", "b");
+        Graph<String, SimpleEdge<String>> graph = newGraph();
+        graph.addEdge(between("a", "b"));
 
-        Optional<StepPath<String>> path = graph.getAnyPath("a", "b");
+        Optional<StepPath<SimpleEdge<String>>> path = graph.getAnyPath("a", "b");
 
-        StepPath<String> expectedPath = StepPath.<String>builder()
-                .edge("a", "b")
+        StepPath<SimpleEdge<String>> expectedPath = StepPath.<SimpleEdge<String>>builder()
+                .edge(between("a", "b"))
                 .build();
         assertThat(path).contains(expectedPath);
     }
 
     @Test
     public void shouldFindTransitivePath() {
-        Graph<String> graph = newGraph();
-        graph.addEdge("a", "b");
-        graph.addEdge("b", "c");
+        Graph<String, SimpleEdge<String>> graph = newGraph();
+        graph.addEdge(between("a", "b"));
+        graph.addEdge(between("b", "c"));
 
-        Optional<StepPath<String>> path = graph.getAnyPath("a", "c");
+        Optional<StepPath<SimpleEdge<String>>> path = graph.getAnyPath("a", "c");
 
-        StepPath<String> expectedPath = StepPath.<String>builder()
-                .edge("a", "b")
-                .edge("b", "c")
+        StepPath<SimpleEdge<String>> expectedPath = StepPath.<SimpleEdge<String>>builder()
+                .edge(between("a", "b"))
+                .edge(between("b", "c"))
                 .build();
         assertThat(path).contains(expectedPath);
     }
 
     @Test
     public void shouldFindPathAvoidCycle() {
-        Graph<String> graph = newGraph();
-        graph.addEdge("a", "b");
-        graph.addEdge("b", "c");
-        graph.addEdge("c", "d");
-        graph.addEdge("a", "c");
+        Graph<String, SimpleEdge<String>> graph = newGraph();
+        graph.addEdge(between("a", "b"));
+        graph.addEdge(between("b", "c"));
+        graph.addEdge(between("c", "d"));
+        graph.addEdge(between("a", "c"));
 
-        Optional<StepPath<String>> path = graph.getAnyPath("a", "d");
+        Optional<StepPath<SimpleEdge<String>>> path = graph.getAnyPath("a", "d");
 
-        StepPath<String> expectedPath = StepPath.<String>builder()
-                .edge("a", "c")
-                .edge("c", "d")
+        StepPath<SimpleEdge<String>> expectedPath = StepPath.<SimpleEdge<String>>builder()
+                .edge(between("a", "c"))
+                .edge(between("c", "d"))
                 .build();
         assertThat(path).contains(expectedPath);
     }
 
     @Test
     public void shouldNotFindPathWhenItDoesNotExist() {
-        Graph<String> graph = newGraph();
-        graph.addEdge("a", "b");
-        graph.addEdge("c", "d");
+        Graph<String, SimpleEdge<String>> graph = newGraph();
+        graph.addEdge(between("a", "b"));
+        graph.addEdge(between("c", "d"));
 
-        Optional<StepPath<String>> path = graph.getAnyPath("a", "c");
+        Optional<StepPath<SimpleEdge<String>>> path = graph.getAnyPath("a", "c");
 
         assertThat(path).isEmpty();
     }

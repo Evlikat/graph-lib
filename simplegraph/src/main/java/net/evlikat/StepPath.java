@@ -4,21 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class StepPath<V> {
+public class StepPath<E> {
 
-    private final List<Step<V>> edges;
+    private final List<E> edges;
 
-    public StepPath(List<Step<V>> edges) {
+    public StepPath(List<E> edges) {
         this.edges = edges;
     }
 
-    public static <V> Builder<V> builder() {
+    public static <E> Builder<E> builder() {
         return new Builder<>(new ArrayList<>());
-    }
-
-    @Override
-    public String toString() {
-        return "StepPath" + edges;
     }
 
     @Override
@@ -34,20 +29,25 @@ public class StepPath<V> {
         return Objects.hash(edges);
     }
 
-    public static class Builder<V> {
+    @Override
+    public String toString() {
+        return "StepPath" + edges;
+    }
 
-        private final List<Step<V>> buildingPathChunks;
+    public static class Builder<E> {
 
-        private Builder(List<Step<V>> buildingPathChunks) {
+        private final List<E> buildingPathChunks;
+
+        private Builder(List<E> buildingPathChunks) {
             this.buildingPathChunks = new ArrayList<>(buildingPathChunks);
         }
 
-        public Builder<V> edge(V vertex1, V vertex2) {
-            buildingPathChunks.add(new Step<>(vertex1, vertex2));
+        public Builder<E> edge(E edge) {
+            buildingPathChunks.add(edge);
             return this;
         }
 
-        public StepPath<V> build() {
+        public StepPath<E> build() {
             return new StepPath<>(buildingPathChunks);
         }
     }

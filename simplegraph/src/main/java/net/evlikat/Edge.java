@@ -1,18 +1,8 @@
 package net.evlikat;
 
-public class Edge {
+public interface Edge<V> {
 
-    private final float weight;
+    V getVertex1();
 
-    public static Edge of(float weight) {
-        return new Edge(weight);
-    }
-
-    public Edge(float weight) {
-        this.weight = weight;
-    }
-
-    public float getWeight() {
-        return weight;
-    }
+    V getVertex2();
 }

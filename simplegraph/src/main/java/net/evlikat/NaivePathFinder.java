@@ -1,11 +1,6 @@
 package net.evlikat;
 
-import com.google.common.collect.Streams;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
@@ -13,7 +8,7 @@ import static java.util.stream.Collectors.toList;
 class NaivePathFinder<V, E> implements PathFinder<V, E> {
 
     @Override
-    public Optional<StepPath<V>> getPath(V fromVertex, V toVertex, Function<V, Map<V, E>> getAdjacentVertices) {
+    public Optional<StepPath<E>> getPath(V fromVertex, V toVertex, Function<V, Map<V, E>> getAdjacentVertices) {
         Deque<Path.Builder<ConnectedVertex<V, E>>> walkStack = new ArrayDeque<>();
         Path.Builder<ConnectedVertex<V, E>> startingPath = Path.builder();
         ConnectedVertex<V, E> startingConnectedVertex = new ConnectedVertex<>(fromVertex, null);
@@ -28,12 +23,9 @@ class NaivePathFinder<V, E> implements PathFinder<V, E> {
         if (path.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(new StepPath<>(
-                        Streams.zip(
-                                path.getPathChunks().stream(),
-                                path.getPathChunks().stream().skip(1),
-                                (cv1, cv2) -> new Step<>(cv1.vertex, cv2.vertex)
-                        ).collect(toList())
+        return Optional.of(
+                new StepPath<>(
+                        path.getPathChunks().stream().map(cv -> cv.edge).filter(Objects::nonNull).collect(toList())
                 )
         );
     }

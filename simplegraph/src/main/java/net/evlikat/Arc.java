@@ -1,18 +1,8 @@
 package net.evlikat;
 
-public class Arc {
+public interface Arc<V> {
 
-    private final float weight;
+    V getFromVertex();
 
-    public static Arc of(float weight) {
-        return new Arc(weight);
-    }
-
-    public Arc(float weight) {
-        this.weight = weight;
-    }
-
-    public float getWeight() {
-        return weight;
-    }
+    V getToVertex();
 }

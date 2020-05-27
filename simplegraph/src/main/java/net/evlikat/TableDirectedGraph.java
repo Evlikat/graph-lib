@@ -5,12 +5,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class TableDirectedGraph<V> implements DirectedGraph<V> {
+public class TableDirectedGraph<V, A extends Arc<V>> implements DirectedGraph<V, A> {
 
-    private final Map<V, Map<V, Arc>> vertexMap = new HashMap<>();
-    private final PathFinder<V, Arc> pathFinder;
+    private final Map<V, Map<V, A>> vertexMap = new HashMap<>();
+    private final PathFinder<V, A> pathFinder;
 
-    TableDirectedGraph(PathFinder<V, Arc> pathFinder) {
+    TableDirectedGraph(PathFinder<V, A> pathFinder) {
         this.pathFinder = pathFinder;
     }
 
@@ -33,25 +33,22 @@ public class TableDirectedGraph<V> implements DirectedGraph<V> {
     }
 
     @Override
-    public void addArc(V fromVertex, V toVertex) {
-        addWeightedArc(fromVertex, toVertex, 1);
-    }
+    public void addArc(A arc) {
 
-    @Override
-    public void addWeightedArc(V fromVertex, V toVertex, float weight) {
-        Arc edge = Arc.of(weight);
+        V fromVertex = arc.getFromVertex();
+        V toVertex = arc.getToVertex();
 
         vertexMap
                 .computeIfAbsent(fromVertex, v -> directionMap())
-                .put(toVertex, edge);
+                .put(toVertex, arc);
     }
 
     @Override
-    public Optional<StepPath<V>> getAnyPath(V fromVertex, V toVertex) {
+    public Optional<StepPath<A>> getAnyPath(V fromVertex, V toVertex) {
         return pathFinder.getPath(fromVertex, toVertex, vertexMap::get);
     }
 
-    private Map<V, Arc> directionMap() {
+    private Map<V, A> directionMap() {
         return new HashMap<>();
     }
 }
