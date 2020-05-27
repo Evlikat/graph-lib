@@ -2,16 +2,16 @@ package net.evlikat;
 
 import java.util.Objects;
 
-class ConnectedVertex<V> {
+class ConnectedVertex<V, E> {
     final V vertex;
-    final Edge edge;
+    final E edge;
 
-    ConnectedVertex(V vertex, Edge edge) {
+    ConnectedVertex(V vertex, E edge) {
         this.vertex = vertex;
         this.edge = edge;
     }
 
-    ConnectedVertex(ConnectedVertex<V> another) {
+    ConnectedVertex(ConnectedVertex<V, E> another) {
         this.vertex = another.vertex;
         this.edge = another.edge;
     }
@@ -20,7 +20,7 @@ class ConnectedVertex<V> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ConnectedVertex<?> that = (ConnectedVertex<?>) o;
+        ConnectedVertex<?, ?> that = (ConnectedVertex<?, ?>) o;
         return Objects.equals(vertex, that.vertex) &&
                 Objects.equals(edge, that.edge);
     }

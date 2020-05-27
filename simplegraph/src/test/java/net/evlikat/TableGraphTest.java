@@ -2,6 +2,8 @@ package net.evlikat;
 
 import org.junit.Test;
 
+import java.util.Optional;
+
 import static net.evlikat.Graphs.newGraph;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -59,12 +61,12 @@ public class TableGraphTest {
         Graph<String> graph = newGraph();
         graph.addEdge("a", "b");
 
-        StepPath<String> path = graph.getAnyPath("a", "b");
+        Optional<StepPath<String>> path = graph.getAnyPath("a", "b");
 
         StepPath<String> expectedPath = StepPath.<String>builder()
                 .edge("a", "b")
                 .build();
-        assertThat(path).isEqualTo(expectedPath);
+        assertThat(path).contains(expectedPath);
     }
 
     @Test
@@ -73,13 +75,13 @@ public class TableGraphTest {
         graph.addEdge("a", "b");
         graph.addEdge("b", "c");
 
-        StepPath<String> path = graph.getAnyPath("a", "c");
+        Optional<StepPath<String>> path = graph.getAnyPath("a", "c");
 
         StepPath<String> expectedPath = StepPath.<String>builder()
                 .edge("a", "b")
                 .edge("b", "c")
                 .build();
-        assertThat(path).isEqualTo(expectedPath);
+        assertThat(path).contains(expectedPath);
     }
 
     @Test
@@ -90,21 +92,23 @@ public class TableGraphTest {
         graph.addEdge("c", "d");
         graph.addEdge("a", "c");
 
-        StepPath<String> path = graph.getAnyPath("a", "d");
+        Optional<StepPath<String>> path = graph.getAnyPath("a", "d");
 
         StepPath<String> expectedPath = StepPath.<String>builder()
                 .edge("a", "c")
                 .edge("c", "d")
                 .build();
-        assertThat(path).isEqualTo(expectedPath);
+        assertThat(path).contains(expectedPath);
     }
 
-    @Test(expected = PathDoesNotExistException.class)
+    @Test
     public void shouldNotFindPathWhenItDoesNotExist() {
         Graph<String> graph = newGraph();
         graph.addEdge("a", "b");
         graph.addEdge("c", "d");
 
-        graph.getAnyPath("a", "c");
+        Optional<StepPath<String>> path = graph.getAnyPath("a", "c");
+
+        assertThat(path).isEmpty();
     }
 }

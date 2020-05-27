@@ -1,5 +1,7 @@
 package net.evlikat;
 
+import java.util.Optional;
+
 public interface Graph<V> {
 
     int order();
@@ -12,5 +14,5 @@ public interface Graph<V> {
 
     void addWeightedEdge(V vertex1, V vertex2, float weight);
 
-    StepPath<V> getAnyPath(V fromVertex, V toVertex);
+    Optional<StepPath<V>> getAnyPath(V fromVertex, V toVertex);
 }

@@ -2,6 +2,8 @@ package net.evlikat;
 
 import org.junit.Test;
 
+import java.util.Optional;
+
 import static net.evlikat.Graphs.newDirectedGraph;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -59,12 +61,12 @@ public class TableDirectedGraphTest {
         DirectedGraph<String> graph = newDirectedGraph();
         graph.addArc("a", "b");
 
-        StepPath<String> path = graph.getAnyPath("a", "b");
+        Optional<StepPath<String>> path = graph.getAnyPath("a", "b");
 
         StepPath<String> expectedPath = StepPath.<String>builder()
                 .edge("a", "b")
                 .build();
-        assertThat(path).isEqualTo(expectedPath);
+        assertThat(path).contains(expectedPath);
     }
 
     @Test
@@ -73,31 +75,35 @@ public class TableDirectedGraphTest {
         graph.addArc("a", "b");
         graph.addArc("b", "c");
 
-        StepPath<String> path = graph.getAnyPath("a", "c");
+        Optional<StepPath<String>> path = graph.getAnyPath("a", "c");
 
         StepPath<String> expectedPath = StepPath.<String>builder()
                 .edge("a", "b")
                 .edge("b", "c")
                 .build();
-        assertThat(path).isEqualTo(expectedPath);
+        assertThat(path).contains(expectedPath);
     }
 
-    @Test(expected = PathDoesNotExistException.class)
+    @Test
     public void shouldNotFindPathWithReversedDirection() {
         DirectedGraph<String> graph = newDirectedGraph();
         graph.addArc("a", "b");
         graph.addArc("b", "c");
 
-        graph.getAnyPath("c", "a");
+        Optional<StepPath<String>> path = graph.getAnyPath("c", "a");
+
+        assertThat(path).isEmpty();
     }
 
-    @Test(expected = PathDoesNotExistException.class)
+    @Test
     public void shouldNotFindPathWithReversedArc() {
         DirectedGraph<String> graph = newDirectedGraph();
         graph.addArc("a", "b");
         graph.addArc("c", "b");
 
-        graph.getAnyPath("a", "c");
+        Optional<StepPath<String>> path = graph.getAnyPath("a", "c");
+
+        assertThat(path).isEmpty();
     }
 
     @Test
@@ -108,21 +114,23 @@ public class TableDirectedGraphTest {
         graph.addArc("c", "d");
         graph.addArc("a", "c");
 
-        StepPath<String> path = graph.getAnyPath("a", "d");
+        Optional<StepPath<String>> path = graph.getAnyPath("a", "d");
 
         StepPath<String> expectedPath = StepPath.<String>builder()
                 .edge("a", "c")
                 .edge("c", "d")
                 .build();
-        assertThat(path).isEqualTo(expectedPath);
+        assertThat(path).contains(expectedPath);
     }
 
-    @Test(expected = PathDoesNotExistException.class)
+    @Test
     public void shouldNotFindPathWhenItDoesNotExist() {
         DirectedGraph<String> graph = newDirectedGraph();
         graph.addArc("a", "b");
         graph.addArc("c", "d");
 
-        graph.getAnyPath("a", "c");
+        Optional<StepPath<String>> path = graph.getAnyPath("a", "c");
+
+        assertThat(path).isEmpty();
     }
 }

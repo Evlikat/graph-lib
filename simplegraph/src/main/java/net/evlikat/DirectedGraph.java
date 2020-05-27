@@ -1,5 +1,7 @@
 package net.evlikat;
 
+import java.util.Optional;
+
 public interface DirectedGraph<V> {
 
     int order();
@@ -12,5 +14,5 @@ public interface DirectedGraph<V> {
 
     void addWeightedArc(V fromVertex, V toVertex, float weight);
 
-    StepPath<V> getAnyPath(V fromVertex, V toVertex);
+    Optional<StepPath<V>> getAnyPath(V fromVertex, V toVertex);
 }
